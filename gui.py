@@ -2,19 +2,26 @@ import PySimpleGUI as sg
 
 import functions
 
-# 'Add To-do' GUI components
+# LABEL WIDGETS
 label = sg.Text("Type in a to-do: ")
-input_box = sg.InputText(tooltip="Enter to-do", key="todo")
-add_button = sg.Button("Add")
 
-# Display To-do Items
+# INPUT WIDGETS
 list_box = sg.Listbox(values=functions.get_todos(), key="todos",
                       enable_events=True, size=[45, 10])
+input_box = sg.InputText(tooltip="Enter to-do", key="todo")
+
+# BUTTONS
+exit_btn = sg.Button('Exit')
 edit_button = sg.Button("Edit")
+add_button = sg.Button("Add")
+complete_btn = sg.Button("Complete")
 
 # MAIN GUI WINDOW
 window = sg.Window("My TO-DO App",
-                   layout=[[label], [input_box, add_button], [list_box, edit_button]],
+                   layout=[[label],
+                           [input_box, add_button],
+                           [list_box, edit_button, complete_btn],
+                           [exit_btn]],
                    font=('Helvetica', 20))
 
 while True:
@@ -42,6 +49,16 @@ while True:
             functions.write_todos(todos)  # updates the to-do list with new todos
             window["todos"].update(values=todos)
 
+        case 'Complete':
+            selected_todo = values['todos'][0]  # gets the to-do user wishes to edit
+            todos = functions.get_todos()
+
+            todos.remove(selected_todo)
+            functions.write_todos(todos)
+            
+            window['todos'].update(values=todos)
+            window['todo'].update(value='')
+
         # REFRESH to-do in InputBox
         case 'todos':
             # when you have a list box event, point to the input box and update with selected to-do from listbox
@@ -49,6 +66,8 @@ while True:
 
         case sg.WIN_CLOSED:
             # handles close window button error
+            break
+        case 'Exit':
             break
 
 window.close()
