@@ -1,14 +1,20 @@
+import os
 import time
 
 import PySimpleGUI as sg
 
 import functions
 
+if not os.path.exists('todos.txt'):
+    with open('todos.txt', 'w'):
+        pass
+
 sg.theme('LightBlue')
 
 # LABEL WIDGETS
 label = sg.Text("Type in a to-do: ")
 clock = sg.Text('', key='clock')
+complete_label = sg.Text('', key='completed')
 
 # INPUT WIDGETS
 list_box = sg.Listbox(values=functions.get_todos(), key="todos",
@@ -23,12 +29,12 @@ complete_btn = sg.Button("Complete", size=10)
 clear_btn = sg.Button("Clear", size=6)
 
 # MAIN GUI WINDOW
-window = sg.Window("My TO-DO App",
+window = sg.Window("Tali's TO-DO App",
                    layout=[[clock],
                            [label],
                            [input_box, add_button],
                            [list_box, edit_button, complete_btn],
-                           [exit_btn, clear_btn]],
+                           [exit_btn, clear_btn, complete_label]],
                    font=('Helvetica', 18))
 
 while True:
@@ -68,6 +74,7 @@ while True:
 
                 window['todos'].update(values=todos)
                 window['todo'].update(value='')
+                window['completed'].update(value='Todo Completed! You\'re so productive.', text_color="green")
             except IndexError:
                 sg.popup("Please select an item first.", font=('Helvetica', 16), title="No Items Selected")
 
@@ -79,8 +86,11 @@ while True:
             window['todo'].update(value='')
         # REFRESH to-do in InputBox
         case 'todos':
-            # when you have a list box event, point to the input box and update with selected to-do from listbox
-            window['todo'].update(value=values['todos'][0])
+            try:
+                # when you have a list box event, point to the input box and update with selected to-do from listbox
+                window['todo'].update(value=values['todos'][0])
+            except IndexError:
+                pass
 
         case sg.WIN_CLOSED:
             # handles close window button error
