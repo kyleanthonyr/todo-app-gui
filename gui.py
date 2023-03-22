@@ -18,7 +18,7 @@ input_box = sg.InputText(tooltip="Enter to-do", key="todo")
 # BUTTONS
 exit_btn = sg.Button('Exit', size=6)
 edit_button = sg.Button("Edit", size=6)
-add_button = sg.Button("Add", size=6)
+add_button = sg.Button(size=2, image_source="add.png", mouseover_colors="LightBlue2", tooltip="Add a todo", key="Add")
 complete_btn = sg.Button("Complete", size=10)
 clear_btn = sg.Button("Clear", size=6)
 
@@ -42,6 +42,7 @@ while True:
             todos.append(new_todo)
             functions.write_todos(todos)
             window["todos"].update(values=todos)
+            window['todo'].update(value="")
 
         # EDIT Feature
         case 'Edit':
